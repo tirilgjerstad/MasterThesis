@@ -1,0 +1,13 @@
+name: mutational_data_analysis
+title: mutational_data_analysis
+username:
+account: tirilagj
+server: shinyapps.io
+hostUrl: https://api.shinyapps.io/v1
+appId: 9532510
+bundleId: 7514228
+url: https://tirilagj.shinyapps.io/mutational_data_analysis/
+when: 1690805361.50689
+lastSyncTime: 1690805361.50695
+asMultiple: FALSE
+asStatic: FALSE
