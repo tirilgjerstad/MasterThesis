@@ -176,8 +176,8 @@ empty_mut_frame = create_empty_mutation_frame(category_file, ids)
 mut_matrix = fill_mutation_matrix(context_df, empty_mut_frame) 
 
 # Write the dataframes to files 
-write_to_file(mut_matrix, 'test_mut')
-write_to_file(context_df, 'test_sbs')
+write_to_file(mut_matrix, 'mutation_matrix')
+write_to_file(context_df, 'control_sbs')
 
 # Print the dataframes 
 print(context_df)
