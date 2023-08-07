@@ -3,7 +3,7 @@
 ## Shiny UI component for the Dashboard
 
 dashboardPage(
-  dashboardHeader(title="Analysing mutational data", titleWidth = 250,
+  dashboardHeader(title="Mutational Data Explorer", titleWidth = 250,
                   leftUi = tagList(
                     
                     dropdownBlock(
@@ -94,10 +94,15 @@ dashboardPage(
     tabItems(
 
       tabItem(tabName='welcome',
-              h3("A simple application for visualizing and analyzing mutation signatures"),
-              p("This application has been developed by Tiril Gjerstad as part of a master's project (spring 2023). 
-                It is a prototype intended for further development as needed. 
-                The source code is available on Git via the following link: git.no."),
+              h3("Mutational Data Explorer: Visualizing and Analyzing Mutational Data"),
+              
+              p("This user-friendly application has been devaloped by Tiril Gjerstad as part of her master's project 
+                in spring 2023. Serving as a prototype, this application offers a wide range of visualizing and analyzing 
+                capabilities for mutational data."),
+              uiOutput("tab"),
+              br(),
+              p("We encourage you to explore, provide feedback, and contribute to the growth of this tool. Happy exploring!"),
+              
               br(),
               
               p(strong('Go to', em("Upload data"), 'to get started: ')),
@@ -118,7 +123,7 @@ dashboardPage(
                p('Non-negative Matrix Factorization (NMF) is acomputational technique used to extract mutation signatures from genetic data. 
               Mutation signatures are characteristic patterns of DNA alterations that arise due to specific mutational processes, such as DNA damage and repair mechanisms, 
               environmental exposures, or underlying biological processes.'),
-              p('NMF has gained popularity in recent years for its ability to extract underlying patterns from high-dimensional datasets, 
+              p('NMF has gained popularity in recent years for its ability to extract underlying patterns from high-dimensional datasets. 
                 NMF can be applied to analyze mutational catalogs derived from cancer genomes, 
                 identifying distinct mutational patterns associated with different mutational processes.'),
               p('Visualization plays a crucial role in this process because it helps researchers gain insights into the patterns and structure of the data. 
@@ -350,8 +355,14 @@ dashboardPage(
 
                   
                   uiOutput("select_subset_cols"),
+                  bsTooltip('select_subset_cols', 
+                            'Select columns to keep, must choose at least two columns, including the ID column',
+                            placement = "left", trigger = "hover", options = list(container = "body")),
                   
                   uiOutput('nr_of_rows'),
+                  bsTooltip('nr_of_rows', 
+                            'The selected number of rows will be selected from the head of the dataset',
+                            placement = "left", trigger = "hover", options = list(container = "body")),
                   DT::dataTableOutput("out_ss_clinical")
                   
                 ),
@@ -363,6 +374,9 @@ dashboardPage(
                                             choiceValues = c('full', 'subset'), selected = 'full'),
                          
                          uiOutput('nr_of_rows_M'),
+                         bsTooltip('nr_of_rows_M', 
+                                   'The selected number of rows will be selected from the head of the dataset',
+                                   placement = "left", trigger = "hover", options = list(container = "body")),
                          DT::dataTableOutput("test_subset_M")
                 )
               )
@@ -581,10 +595,19 @@ dashboardPage(
                               fluidRow(
                                 column(width = 5,
                                        uiOutput("select_cat_id"),
-                                       uiOutput("select_cat_response")),
+                                       bsTooltip('select_cat_id', 
+                                                 'Must be binary for binary outcome, and three or more unique outcomes for non-binary.', 
+                                                 placement = "left", trigger = "hover", options = list(container = "body")),
+                                       
+                                       uiOutput("select_cat_response"),
+                                       bsTooltip('select_cat_response', 
+                                                 'Must be unique for each sample, and correspond to IDs in mutation data.', 
+                                                 placement = "left", trigger = "hover", options = list(container = "body")),
+                                ),
+                                
                                 column(width = 4, 
                                        uiOutput("out_result_matrix_cat")),
-                                column(width = 4,
+                                column(width = 3,
                                        gt_output('test_gt'))),
                               
                               
@@ -594,7 +617,13 @@ dashboardPage(
                               
                               fluidRow(
                                 column(width = 5,
-                                       uiOutput("select_cat_predictor")
+                                       uiOutput("select_cat_predictor"),
+                                       bsTooltip('select_cat_predictor', 
+                                                 'Select a signature to see more details',
+                                                 placement = "left", trigger = "hover", options = list(container = "body"))
+                                       
+                                       
+                                       
                                 )),
                               fluidRow(
                                 column(width = 12,
@@ -631,14 +660,28 @@ dashboardPage(
                               fluidRow(
                                 column(width = 5,
                                        uiOutput("select_cont_id"),
-                                       uiOutput("select_cont_response")),
+                                       bsTooltip('select_cont_id', 
+                                                 'Must be unique for each sample, and correspond to IDs in mutation data.', 
+                                                 placement = "left", trigger = "hover", options = list(container = "body")),
+                                       
+                                       
+                                       uiOutput("select_cont_response"),
+                                       bsTooltip('select_cont_response', 
+                                                 'Must be numerical', 
+                                                 placement = "left", trigger = "hover", options = list(container = "body")),
+                                ),
+                                
                                 column(width = 4, 
                                        uiOutput("out_result_matrix_cont"))),
                               br(),
                               br(),
                               fluidRow(
                                 column(width = 5,
-                                       uiOutput("select_cont_predictor"))),
+                                       uiOutput("select_cont_predictor"),
+                                       bsTooltip('select_cont_predictor', 
+                                                 'Select a signature to see more details',
+                                                 placement = "left", trigger = "hover", options = list(container = "body"))
+                                                 )),
                               fluidRow(
                                 column(width = 12,
                                        verbatimTextOutput("summary_linear_model"))),
@@ -672,9 +715,8 @@ dashboardPage(
                               
                               fluidRow(
                                 column(width = 12,
-                              
-                                  fluidRow( 
-                                    withSpinner(plotOutput("ggbox")))))
+                                       withSpinner(plotOutput("ggbox")))),
+                              downloadButton("download_box", "Download plot")
     
                     ),
                      
@@ -700,11 +742,28 @@ dashboardPage(
     
               tabBox(id="t4", width = 12, 
                      tabPanel("Prepare dataset", icon=icon("circle-info"),
+                              
 
                               uiOutput("select_surv_id"),
+                              bsTooltip('select_surv_id', 
+                                        'Must be unique for each sample, and correspond to IDs in mutation data.', 
+                                        placement = "left", trigger = "hover", options = list(container = "body")),
+                              
                               uiOutput("select_surv_time"),
+                              bsTooltip('select_surv_time', 
+                                        'Must be numerical, and represent a time step.', 
+                                        placement = "left", trigger = "hover", options = list(container = "body")),
+                              
                               uiOutput("select_surv_event"),
+                              bsTooltip('select_surv_event', 
+                                        'Must be numerical, and all values must be 1 or 0 (represent event or non-event respectively).', 
+                                        placement = "left", trigger = "hover", options = list(container = "body")),
+
                               uiOutput("select_cluster"),
+                              bsTooltip('select_cluster', 
+                                        'The vaiable to use for the grouing, can be clustering obtained from NMF or a clinical variable.', 
+                                        placement = "left", trigger = "hover", options = list(container = "body")),
+                              
                               br(),
                               DT::dataTableOutput('dataMerge')
                               

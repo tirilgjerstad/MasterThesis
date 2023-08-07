@@ -1,3 +1,13 @@
+
+
+
+url = a("GitHub repository.", href="https://github.com/tirilgjerstad/MasterThesis/tree/main/shiny_app", target="_blank")
+output$tab = renderUI({
+  tagList("To access the application's source code, please visit our", url)
+})
+
+
+
 # -------------- THE DATA TABLES --------------
 
 

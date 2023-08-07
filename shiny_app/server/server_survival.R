@@ -88,7 +88,7 @@ output$select_surv_event = renderUI({
     
     colx = data_clinical()[[cname]]
     
-    if (length(unique(colx[!is.na(colx)])) == 2) {
+    if (all(colx %in% c(0, 1))) {
       binary_factors = append(binary_factors, cname)
     }
   }

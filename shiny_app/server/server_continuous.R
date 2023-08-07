@@ -35,7 +35,7 @@ output$select_cont_predictor = renderUI({
   req(E_hat())
   
   
-  selectizeInput(inputId = "cont_pred", label = "Invesigate one spesific signature-predictor::", 
+  selectizeInput(inputId = "cont_pred", label = "Invesigate one spesific signature-predictor:", 
                  choices =  names(as.data.frame(E_hat())),
                  multiple = TRUE, options = list(maxItems = 1))
 })
@@ -183,7 +183,7 @@ output$binary_clinical = DT::renderDataTable({
 })
 
 
-output$ggbox = renderPlot({
+reactive_ggbox = reactive({
 
   req(merge_id_response_cluster_cont())
 
@@ -197,6 +197,21 @@ output$ggbox = renderPlot({
           plot.title = element_text(size = 20))
   
 })
+
+
+output$ggbox = renderPlot({
+  reactive_ggbox()
+})
+
+output$download_box = downloadHandler(
+  filename = function() {
+    "nmf_continuous_boxplot.png"
+  },
+  content = function(file) {
+    ggsave(file, plot = reactive_ggbox(), device = "png", height = 6, width = 10)
+  }
+)
+
 
 # Merged datasets with the chosen columns 
 
@@ -375,7 +390,7 @@ output$t_test <- renderPrint({
 output$wilcox_test <- renderPrint({
 
   req(merge_id_response_cluster_cont())
-  req(input$k_groups > 2)
+  req(input$k_groups == 2)
   
   wilcox.test(response ~ cluster, conf.int = TRUE, data = merge_id_response_cluster_cont())
 })
@@ -383,7 +398,7 @@ output$wilcox_test <- renderPrint({
 output$cor_test1 = renderPrint({
   
   req(merge_id_response_cluster_cont())
-  req(input$k_groups > 2)
+  req(input$k_groups == 2)
   
   cor.test(merge_id_response_cluster_cont()$response, merge_id_response_cluster_cont()$cluster,
            conf.int = TRUE, method = 'pearson')
@@ -392,7 +407,7 @@ output$cor_test1 = renderPrint({
 output$cor_test2 = renderPrint({
 
   req(merge_id_response_cluster_cont())
-  req(input$k_groups > 2)
+  req(input$k_groups == 2)
   
   cor.test(merge_id_response_cluster_cont()$response, merge_id_response_cluster_cont()$cluster,
            conf.int = TRUE, method = 'spearman')
